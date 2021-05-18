@@ -3,6 +3,11 @@ package com.example.tdd;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build.VERSION_CODES;
+import android.util.Log;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,10 +33,46 @@ public class SaveHelperTest {
     }
 
     @Test
+    public void test(){
+        int i = 0;
+        int cmd = 10;
+        long seq = 1653317479029761L;
+        String res = buildWholeMessage("Receive nonconst msg push[%d], seq=%d, command 0x%x", i, seq, cmd);
+        System.out.println("res: " + res);
+        Log.i("TAG", buildWholeMessage("Receive nonconst msg push[%d], seq=%d, command 0x%x", i, seq, cmd));
+    }
+
+    private  String buildWholeMessage(String format, Object... args) {
+        if(args != null && args.length != 0) {
+            String msg = String.format(format, args);
+            return msg;
+        } else {
+            return format;
+        }
+    }
+
+    @Test
     public void testPutAndGet() {
         sharedPreferences.edit().putString("key", "Hello").apply();
         String value = sharedPreferences.getString("key", "");
         Assert.assertEquals(value, "Hello");
+    }
+
+    @Test
+    public void testMap() {
+        Map<String, String> map = new HashMap<>();
+        map.put("key01", "1");
+        map.put("key02", "2");
+
+        Map<String, String> subMap = new HashMap<>();
+        map.put("key01", "3");
+        map.put("key02", "4");
+
+        map.putAll(subMap);
+        Set<Entry<String, String>> entries = map.entrySet();
+        for (Entry<String, String> entry : entries) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
     }
 
     @Test
